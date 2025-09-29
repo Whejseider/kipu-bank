@@ -2,7 +2,8 @@
 
 KipuBank es un contrato inteligente con fines educativo que simula un banco simple en Ethereum, escrito hecho en Solidity v0.8.30.
 
-⚠️ Se recomienda utilizar redes de prueba como Sepolia.
+>[!WARNING]
+Se recomienda utilizar redes de prueba como Sepolia.
 
 Permite a los usuarios:
 - Depositar fondos respetando el tope máximo del banco.
