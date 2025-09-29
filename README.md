@@ -45,8 +45,3 @@ Una vez deployado el contrato:
   - `verUmbralDeRetiro()` devuelve el umbral de retiro.
   - `verBankCap()` devuelve el bankCap.
   - `balanceUsuario(address usuario)` devuelve el balance o fondo del usuario, donde address usuario es la dirección de la wallet del usuario.
-
-## Contrato desplegado en una testnet
-
-A continuación se deja el enlace al [contrato](https://sepolia.etherscan.io/address/0x890fdd0a27f1dd2dd2dc39f6ea86c6d4da7d6fb1) desplegado en el explorador de bloques de Etherscan.
-Se puede observar tanto las transacciones como el contrato en sí junto con su código verificado y los eventos.
