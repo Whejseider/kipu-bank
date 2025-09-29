@@ -1,0 +1,322 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_bankCap",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_umbralRetiro",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "cantidad",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "bankCap",
+						"type": "uint256"
+					}
+				],
+				"name": "BankCapExcedido",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "NoEsOwnerBoveda",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "cantidad",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "umbral",
+						"type": "uint256"
+					}
+				],
+				"name": "RetiroNoValido",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "balance",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "cantidad",
+						"type": "uint256"
+					}
+				],
+				"name": "SaldoInsuficiente",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "destino",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "cantidad",
+						"type": "uint256"
+					}
+				],
+				"name": "TransferenciaFallida",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ValorNoPuedeSerCeroONegativo",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "depositante",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "valor",
+						"type": "uint256"
+					}
+				],
+				"name": "DepositoExitoso",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "depositario",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "valor",
+						"type": "uint256"
+					}
+				],
+				"name": "RetiroExitoso",
+				"type": "event"
+			},
+			{
+				"stateMutability": "nonpayable",
+				"type": "fallback"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "usuario",
+						"type": "address"
+					}
+				],
+				"name": "balanceUsuario",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "deposito",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "cantidad",
+						"type": "uint256"
+					}
+				],
+				"name": "retiro",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "verBankCap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "verDepositosTotales",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "verRegistros",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "verUmbralDeRetiro",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"author": "Whejseider - Franco Vallone",
+			"custom:security": "Este es un contrato educativo y no debe ser usado en producción",
+			"kind": "dev",
+			"methods": {},
+			"title": "KipuBank",
+			"version": 1
+		},
+		"userdoc": {
+			"errors": {
+				"BankCapExcedido(uint256,uint256)": [
+					{
+						"notice": "Error si el depósito supera el límite global del banco"
+					}
+				],
+				"NoEsOwnerBoveda()": [
+					{
+						"notice": "error cuando el que quiere depositar o retirar no es el dueño de la bóveda"
+					}
+				],
+				"RetiroNoValido(uint256,uint256)": [
+					{
+						"notice": "error al intentar retirar más del límite permitido"
+					}
+				],
+				"SaldoInsuficiente(uint256,uint256)": [
+					{
+						"notice": "error al intentar retirar más de lo que tiene el usuario"
+					}
+				],
+				"TransferenciaFallida(address,uint256)": [
+					{
+						"notice": "error si falla la transferencia de ETH"
+					}
+				],
+				"ValorNoPuedeSerCeroONegativo()": [
+					{
+						"notice": "error cuando un valor no puede ser cero ni negativo"
+					}
+				]
+			},
+			"events": {
+				"DepositoExitoso(address,uint256)": {
+					"notice": "evento emitido al realizar exitosamente un depósito"
+				},
+				"RetiroExitoso(address,uint256)": {
+					"notice": "evento emitido al realizar exitosamente un retiro"
+				}
+			},
+			"kind": "user",
+			"methods": {},
+			"notice": "Este contrato es parte del curso ETH KIPU || Módulo 2 - Fundamentos de Solidity",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/kipu.sol": "KipuBank"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/kipu.sol": {
+			"keccak256": "0xbc6b99c40eb6d815d58ab63a495a2646c9f2d8693b5c16f743aba73e856005bc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://780918e1800baf25221544abdd87a9c719323bd56722158560c850aead385bb9",
+				"dweb:/ipfs/QmS9vi2hVxQ7LJBSSgVkHVESWVMPASkXwPewQqHJpWfCMi"
+			]
+		}
+	},
+	"version": 1
+}
