@@ -45,11 +45,22 @@ El contrato utiliza las siguientes librerías:
 En Remix, las dependencias se importan automáticamente desde GitHub. El contrato usa:
 
 ```solidity
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+/*///////////////////////////////////
+        Imports
+///////////////////////////////////*/
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
+/*///////////////////////////////////
+        Libraries
+///////////////////////////////////*/
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
+/*///////////////////////////////////
+        Interfaces
+///////////////////////////////////*/
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 ```
 
 Remix los descargará automáticamente al compilar.
@@ -117,7 +128,7 @@ En el campo **Deploy** junto al botón naranja, debes ingresar los 3 parámetros
 6. En la pestaña "Contract", click en "Verify and Publish"
 7. Completar el formulario:
    - Compiler: `v0.8.30`
-   - Optimization: `Yes` con 200 runs
+   - Optimization: `No`
    - EVM Version to target: default
 
 ## 💡 Interacción con el Contrato
