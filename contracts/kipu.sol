@@ -4,78 +4,76 @@ pragma solidity 0.8.30;
 /**
  * @title KipuBank
  * @author Whejseider - Franco Vallone
- * @notice Este contrato es parte del curso ETH KIPU || Módulo 2 - Fundamentos de Solidity
- * @custom:security Este es un contrato educativo y no debe ser usado en producción
+ * @notice This contract is part of the ETH KIPU course || Module 2 - Solidity Fundamentals
+ * @custom:security This is an educational contract and should not be used in production
  */
 contract KipuBank {
     /*///////////////////////////////////
           Type declarations
 ///////////////////////////////////*/
 
-    ///@notice mapping para almacenar la dirección de un usuario y los fondos.
-    mapping(address usuario => uint256 balance) private bovedas;
+    /// @notice Mapping to store user address and their funds
+    mapping(address user => uint256 balance) private vaults;
 
-    ///@notice estructura para almacenar el registro de depósitos y retiros
-    struct Registro {
-        uint256 numerosDeDepositos;
-        uint256 numerosDeRetiros;
+    /// @notice Struct to store deposit and withdrawal records
+    struct Record {
+        uint256 numberOfDeposits;
+        uint256 numberOfWithdrawals;
     }
 
     /*///////////////////////////////////
            State variables
 ///////////////////////////////////*/
 
-    ///@notice variable de estado para registrar los depósitos y retiros
-    Registro private registro;
+    /// @notice State variable to record deposits and withdrawals
+    Record private record;
 
-    ///@notice umbral de retiro de fondos de la bóveda
-    uint256 private immutable umbralRetiro;
+    /// @notice Withdrawal threshold from vault
+    uint256 private immutable withdrawalThreshold;
 
-    ///@notice límite global de depósitos
+    /// @notice Global deposit limit
     uint256 private immutable bankCap;
 
-    ///@notice balance total depositado por todos los usuarios
-    uint256 private depositosTotales;
+    /// @notice Total balance deposited by all users
+    uint256 private totalDeposits;
 
     /*///////////////////////////////////
                Events
 ///////////////////////////////////*/
 
-    ///@notice evento emitido al realizar exitosamente un depósito
-    event DepositoExitoso(address depositante, uint256 valor);
-    ///@notice evento emitido al realizar exitosamente un retiro
-    event RetiroExitoso(address depositario, uint256 valor);
+    /// @notice Event emitted when a deposit is successful
+    event DepositSuccessful(address indexed depositor, uint256 amount);
+    
+    /// @notice Event emitted when a withdrawal is successful
+    event WithdrawalSuccessful(address indexed withdrawer, uint256 amount);
 
     /*///////////////////////////////////
                Errors
 ///////////////////////////////////*/
 
-    ///@notice error al intentar retirar más del límite permitido
-    error RetiroNoValido(uint256 cantidad, uint256 umbral);
+    /// @notice Error when trying to withdraw more than the allowed limit
+    error InvalidWithdrawal(uint256 amount, uint256 threshold);
 
-    ///@notice error al intentar retirar más de lo que tiene el usuario
-    error SaldoInsuficiente(uint256 balance, uint256 cantidad);
+    /// @notice Error when trying to withdraw more than the user has
+    error InsufficientBalance(uint256 balance, uint256 amount);
 
-    ///@notice Error si el depósito supera el límite global del banco
-    error BankCapExcedido(uint256 cantidad, uint256 bankCap);
+    /// @notice Error if deposit exceeds the global bank limit
+    error BankCapExceeded(uint256 amount, uint256 bankCap);
 
-    ///@notice error si falla la transferencia de ETH
-    error TransferenciaFallida(address destino, uint256 cantidad);
+    /// @notice Error if ETH transfer fails
+    error TransferFailed(address destination, uint256 amount);
 
-    ///@notice error cuando un valor no puede ser cero ni negativo
-    error ValorNoPuedeSerCeroONegativo();
-
-    ///@notice error cuando el que quiere depositar o retirar no es el dueño de la bóveda
-    error NoEsOwnerBoveda();
+    /// @notice Error when a value cannot be zero or negative
+    error ValueCannotBeZeroOrNegative();
 
     /*///////////////////////////////////
             Modifiers
 ///////////////////////////////////*/
 
-    ///@notice verifica que sólo el dueño de la bóveda pueda realizar retiros de fondos
-    modifier onlyOwnerBoveda() {
-        if (bovedas[msg.sender] == 0) {
-            revert NoEsOwnerBoveda();
+    /// @notice Verifies that only the vault owner can withdraw funds
+    modifier onlyVaultOwner() {
+        if (vaults[msg.sender] == 0) {
+            revert InsufficientBalance(0, 0);
         }
         _;
     }
@@ -88,58 +86,58 @@ contract KipuBank {
         constructor
 /////////////////////////*/
 
-    constructor(uint256 _bankCap, uint256 _umbralRetiro) {
+    constructor(uint256 _bankCap, uint256 _withdrawalThreshold) {
         bankCap = _bankCap;
-        umbralRetiro = _umbralRetiro;
-        registro.numerosDeDepositos = 0;
-        registro.numerosDeRetiros = 0;
+        withdrawalThreshold = _withdrawalThreshold;
+        record.numberOfDeposits = 0;
+        record.numberOfWithdrawals = 0;
     }
 
     /*/////////////////////////
      Receive&Fallback
 /////////////////////////*/
 
-    ///@notice función para recibir ether directamente
-    receive() external payable {}
-    fallback() external {}
+    /// @notice Function to receive ether directly and redirect to deposit
+    receive() external payable {
+        _processDeposit();
+    }
+    
+    /// @notice Fallback function redirects to deposit if ETH is sent
+    fallback() external payable {
+        if (msg.value > 0) {
+            _processDeposit();
+        }
+    }
 
     /*/////////////////////////
         external
 /////////////////////////*/
 
-    /*
-		@notice Función utilizada para retirar fondos de una bóveda
-		@para cantidad - cantidad de fondos a retirar
-	*/
-    function retiro(uint256 cantidad) external onlyOwnerBoveda {
-        if (cantidad <= 0) revert ValorNoPuedeSerCeroONegativo();
-        if (cantidad > bovedas[msg.sender])
-            revert SaldoInsuficiente(bovedas[msg.sender], cantidad);
-        if (cantidad > umbralRetiro)
-            revert RetiroNoValido(cantidad, umbralRetiro);
+    /**
+     * @notice Function used to withdraw funds from a vault
+     * @param amount - amount of funds to withdraw
+     */
+    function withdraw(uint256 amount) external onlyVaultOwner {
+        if (amount <= 0) revert ValueCannotBeZeroOrNegative();
+        if (amount > vaults[msg.sender])
+            revert InsufficientBalance(vaults[msg.sender], amount);
+        if (amount > withdrawalThreshold)
+            revert InvalidWithdrawal(amount, withdrawalThreshold);
 
-        bovedas[msg.sender] -= cantidad;
-        depositosTotales -= cantidad;
-        registro.numerosDeRetiros++;
+        vaults[msg.sender] -= amount;
+        totalDeposits -= amount;
+        record.numberOfWithdrawals++;
 
-        _transferirETH(cantidad);
+        _transferETH(amount);
 
-        emit RetiroExitoso(msg.sender, cantidad);
+        emit WithdrawalSuccessful(msg.sender, amount);
     }
 
-    /*
-		@notice Función utilizada para depositar fondos a una bóveda
-	*/
-    function deposito() external payable {
-        if (msg.value <= 0) revert ValorNoPuedeSerCeroONegativo();
-        if (msg.value + depositosTotales > bankCap)
-            revert BankCapExcedido(msg.value, bankCap);
-
-        bovedas[msg.sender] += msg.value;
-        depositosTotales += msg.value;
-        registro.numerosDeDepositos++;
-
-        emit DepositoExitoso(msg.sender, msg.value);
+    /**
+     * @notice Function used to deposit funds to a vault
+     */
+    function deposit() external payable {
+        _processDeposit();
     }
 
     /*/////////////////////////
@@ -150,56 +148,71 @@ contract KipuBank {
         internal
 /////////////////////////*/
 
+    /**
+     * @notice Internal function to process deposits
+     */
+    function _processDeposit() internal {
+        if (msg.value <= 0) revert ValueCannotBeZeroOrNegative();
+        if (msg.value + totalDeposits > bankCap)
+            revert BankCapExceeded(msg.value, bankCap);
+
+        vaults[msg.sender] += msg.value;
+        totalDeposits += msg.value;
+        record.numberOfDeposits++;
+
+        emit DepositSuccessful(msg.sender, msg.value);
+    }
+
     /*/////////////////////////
         private
 /////////////////////////*/
 
-    /*
-		@notice Función utilizada para transferir ETH
-		@para cantidad - cantidad de fondos a transferir
-	*/
-    function _transferirETH(uint256 cantidad) private {
-        (bool exito, ) = msg.sender.call{value: cantidad}("");
-        if (!exito) revert TransferenciaFallida(msg.sender, cantidad);
+    /**
+     * @notice Function used to transfer ETH
+     * @param amount - amount of funds to transfer
+     */
+    function _transferETH(uint256 amount) private {
+        (bool success, ) = msg.sender.call{value: amount}("");
+        if (!success) revert TransferFailed(msg.sender, amount);
     }
 
     /*/////////////////////////
       View & Pure
 /////////////////////////*/
 
-    /*
-        @notice devuelve el balance o fondo del usuario
-        @para usuario - dirección de la address del usuario
-    */
-    function balanceUsuario(address usuario) public view returns (uint256) {
-        return bovedas[usuario];
+    /**
+     * @notice Returns the user's balance or funds
+     * @param user - user's address
+     */
+    function userBalance(address user) public view returns (uint256) {
+        return vaults[user];
     }
 
-    /*
-        @notice devuelve el valor total de los depósitos
-    */
-    function verDepositosTotales() public view returns (uint256) {
-        return depositosTotales;
+    /**
+     * @notice Returns the total value of deposits
+     */
+    function viewTotalDeposits() public view returns (uint256) {
+        return totalDeposits;
     }
 
-    /*
-        @notice devuelve el bankCap
-    */
-    function verBankCap() public view returns (uint256) {
+    /**
+     * @notice Returns the bankCap
+     */
+    function viewBankCap() public view returns (uint256) {
         return bankCap;
     }
 
-    /*
-        @notice devuelve registro de los números de depósitos y retiros realizados
-    */
-    function verRegistros() public view returns (uint256, uint256) {
-        return (registro.numerosDeDepositos, registro.numerosDeRetiros);
+    /**
+     * @notice Returns record of the number of deposits and withdrawals made
+     */
+    function viewRecords() public view returns (uint256, uint256) {
+        return (record.numberOfDeposits, record.numberOfWithdrawals);
     }
 
-    /*
-        @notice devuelve el umbral de retiro
-    */
-    function verUmbralDeRetiro() public view returns (uint256) {
-        return umbralRetiro;
+    /**
+     * @notice Returns the withdrawal threshold
+     */
+    function viewWithdrawalThreshold() public view returns (uint256) {
+        return withdrawalThreshold;
     }
 }

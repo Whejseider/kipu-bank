@@ -14,7 +14,7 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "_umbralRetiro",
+						"name": "_withdrawalThreshold",
 						"type": "uint256"
 					}
 				],
@@ -25,7 +25,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "cantidad",
+						"name": "amount",
 						"type": "uint256"
 					},
 					{
@@ -34,28 +34,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "BankCapExcedido",
-				"type": "error"
-			},
-			{
-				"inputs": [],
-				"name": "NoEsOwnerBoveda",
-				"type": "error"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "cantidad",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "umbral",
-						"type": "uint256"
-					}
-				],
-				"name": "RetiroNoValido",
+				"name": "BankCapExceeded",
 				"type": "error"
 			},
 			{
@@ -67,98 +46,95 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "cantidad",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
-				"name": "SaldoInsuficiente",
+				"name": "InsufficientBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "threshold",
+						"type": "uint256"
+					}
+				],
+				"name": "InvalidWithdrawal",
 				"type": "error"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "destino",
+						"name": "destination",
 						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "cantidad",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
-				"name": "TransferenciaFallida",
+				"name": "TransferFailed",
 				"type": "error"
 			},
 			{
 				"inputs": [],
-				"name": "ValorNoPuedeSerCeroONegativo",
+				"name": "ValueCannotBeZeroOrNegative",
 				"type": "error"
 			},
 			{
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "address",
-						"name": "depositante",
+						"name": "depositor",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "valor",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
-				"name": "DepositoExitoso",
+				"name": "DepositSuccessful",
 				"type": "event"
 			},
 			{
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "address",
-						"name": "depositario",
+						"name": "withdrawer",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "valor",
+						"name": "amount",
 						"type": "uint256"
 					}
 				],
-				"name": "RetiroExitoso",
+				"name": "WithdrawalSuccessful",
 				"type": "event"
 			},
 			{
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "fallback"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "usuario",
-						"type": "address"
-					}
-				],
-				"name": "balanceUsuario",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [],
-				"name": "deposito",
+				"name": "deposit",
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
@@ -166,19 +142,12 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "cantidad",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
 					}
 				],
-				"name": "retiro",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "verBankCap",
+				"name": "userBalance",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -191,7 +160,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "verDepositosTotales",
+				"name": "viewBankCap",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -204,7 +173,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "verRegistros",
+				"name": "viewRecords",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -222,7 +191,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "verUmbralDeRetiro",
+				"name": "viewTotalDeposits",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -231,6 +200,32 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "viewWithdrawalThreshold",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdraw",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -240,56 +235,84 @@
 		],
 		"devdoc": {
 			"author": "Whejseider - Franco Vallone",
-			"custom:security": "Este es un contrato educativo y no debe ser usado en producción",
+			"custom:security": "This is an educational contract and should not be used in production",
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"userBalance(address)": {
+					"params": {
+						"user": "- user's address"
+					}
+				},
+				"withdraw(uint256)": {
+					"params": {
+						"amount": "- amount of funds to withdraw"
+					}
+				}
+			},
 			"title": "KipuBank",
 			"version": 1
 		},
 		"userdoc": {
 			"errors": {
-				"BankCapExcedido(uint256,uint256)": [
+				"BankCapExceeded(uint256,uint256)": [
 					{
-						"notice": "Error si el depósito supera el límite global del banco"
+						"notice": "Error if deposit exceeds the global bank limit"
 					}
 				],
-				"NoEsOwnerBoveda()": [
+				"InsufficientBalance(uint256,uint256)": [
 					{
-						"notice": "error cuando el que quiere depositar o retirar no es el dueño de la bóveda"
+						"notice": "Error when trying to withdraw more than the user has"
 					}
 				],
-				"RetiroNoValido(uint256,uint256)": [
+				"InvalidWithdrawal(uint256,uint256)": [
 					{
-						"notice": "error al intentar retirar más del límite permitido"
+						"notice": "Error when trying to withdraw more than the allowed limit"
 					}
 				],
-				"SaldoInsuficiente(uint256,uint256)": [
+				"TransferFailed(address,uint256)": [
 					{
-						"notice": "error al intentar retirar más de lo que tiene el usuario"
+						"notice": "Error if ETH transfer fails"
 					}
 				],
-				"TransferenciaFallida(address,uint256)": [
+				"ValueCannotBeZeroOrNegative()": [
 					{
-						"notice": "error si falla la transferencia de ETH"
-					}
-				],
-				"ValorNoPuedeSerCeroONegativo()": [
-					{
-						"notice": "error cuando un valor no puede ser cero ni negativo"
+						"notice": "Error when a value cannot be zero or negative"
 					}
 				]
 			},
 			"events": {
-				"DepositoExitoso(address,uint256)": {
-					"notice": "evento emitido al realizar exitosamente un depósito"
+				"DepositSuccessful(address,uint256)": {
+					"notice": "Event emitted when a deposit is successful"
 				},
-				"RetiroExitoso(address,uint256)": {
-					"notice": "evento emitido al realizar exitosamente un retiro"
+				"WithdrawalSuccessful(address,uint256)": {
+					"notice": "Event emitted when a withdrawal is successful"
 				}
 			},
 			"kind": "user",
-			"methods": {},
-			"notice": "Este contrato es parte del curso ETH KIPU || Módulo 2 - Fundamentos de Solidity",
+			"methods": {
+				"deposit()": {
+					"notice": "Function used to deposit funds to a vault"
+				},
+				"userBalance(address)": {
+					"notice": "Returns the user's balance or funds"
+				},
+				"viewBankCap()": {
+					"notice": "Returns the bankCap"
+				},
+				"viewRecords()": {
+					"notice": "Returns record of the number of deposits and withdrawals made"
+				},
+				"viewTotalDeposits()": {
+					"notice": "Returns the total value of deposits"
+				},
+				"viewWithdrawalThreshold()": {
+					"notice": "Returns the withdrawal threshold"
+				},
+				"withdraw(uint256)": {
+					"notice": "Function used to withdraw funds from a vault"
+				}
+			},
+			"notice": "This contract is part of the ETH KIPU course || Module 2 - Solidity Fundamentals",
 			"version": 1
 		}
 	},
@@ -310,11 +333,11 @@
 	},
 	"sources": {
 		"contracts/kipu.sol": {
-			"keccak256": "0xbc6b99c40eb6d815d58ab63a495a2646c9f2d8693b5c16f743aba73e856005bc",
+			"keccak256": "0x47e791b1946877430a12c72aac20aabce033f8c2650a5375fa0f5cd8beedb4bb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://780918e1800baf25221544abdd87a9c719323bd56722158560c850aead385bb9",
-				"dweb:/ipfs/QmS9vi2hVxQ7LJBSSgVkHVESWVMPASkXwPewQqHJpWfCMi"
+				"bzz-raw://e9bcf2e014ed919507151f3c6916e2489457745540b430b358fc99a48af676cb",
+				"dweb:/ipfs/QmfCMgcGLNf4tc6B7tWphrPhVKRZkpAiciRawxdP7KUF55"
 			]
 		}
 	},
