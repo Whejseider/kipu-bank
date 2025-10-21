@@ -1033,7 +1033,7 @@
 					}
 				}
 			},
-			"title": "KipuBank",
+			"title": "KipuBankV2",
 			"version": 1
 		},
 		"userdoc": {
@@ -1133,7 +1133,7 @@
 					"notice": "Global bank capacity limit in USD (6 decimals)"
 				},
 				"constructor": {
-					"notice": "Initializes the KipuBank contract"
+					"notice": "Initializes the KipuBankV2 contract"
 				},
 				"depositETH()": {
 					"notice": "Deposits native ETH into the bank"
@@ -1196,7 +1196,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/kipu.sol": "KipuBank"
+			"contracts/kipu.sol": "KipuBankV2"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -1307,11 +1307,11 @@
 			]
 		},
 		"contracts/kipu.sol": {
-			"keccak256": "0xad869ec11a9b997d6fc785ca102a204a05c33ef97fc5445e928630b9c5ee52ba",
+			"keccak256": "0xd1aa89043bde4e64dbd4f7f96f6adfe49298096e4476ec25fa4a4f3d7a97a5bc",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://57faa661365f1a165076a2c24b6a8f8e65286299d29d65360355f239fc9d0900",
-				"dweb:/ipfs/QmWEY9Sy5hm2ArtSdgCXkfe2K79n7hpdDLCMsWZWq3Sxu3"
+				"bzz-raw://dbab86e4d11cdef5b271b30339f958fa02067707075758fed2fc420725c741a3",
+				"dweb:/ipfs/QmWmYP5TkoBBmGP4BR36sG252H4yLB5iuZUUTK4qEPMWYk"
 			]
 		}
 	},
